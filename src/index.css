@@ -2,41 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Vinci4 Design System - Journey-inspired warm, organic aesthetics */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core Journey-inspired palette */
+    --background: 35 45% 92%;  /* Sandy beige */
+    --foreground: 25 15% 25%;  /* Warm dark brown */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 40 50% 95%;
+    --card-foreground: 25 15% 25%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 40 50% 95%;
+    --popover-foreground: 25 15% 25%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Golden accent system */
+    --primary: 45 95% 65%;     /* Warm gold */
+    --primary-foreground: 25 15% 15%;
+    --primary-glow: 45 100% 75%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Tree growth colors */
+    --tree-trunk: 25 35% 35%;
+    --tree-green: 120 40% 55%;
+    --tree-glow: 120 60% 75%;
+    
+    /* Category colors */
+    --finance: 220 70% 60%;    /* Deep blue */
+    --physical: 15 85% 60%;    /* Warm orange */
+    --mental: 280 50% 65%;     /* Soft purple */
+    --diet: 90 50% 55%;        /* Fresh green */
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --secondary: 35 30% 85%;
+    --secondary-foreground: 25 15% 25%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --muted: 35 25% 88%;
+    --muted-foreground: 25 10% 45%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --accent: 45 80% 75%;
+    --accent-foreground: 25 15% 15%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 40 50% 95%;
 
-    --radius: 0.5rem;
+    --border: 35 20% 80%;
+    --input: 35 25% 85%;
+    --ring: 45 95% 65%;
+
+    /* Organic curved corners */
+    --radius: 1rem;
+    
+    /* Glowing effects */
+    --glow-soft: 0 0 20px;
+    --glow-medium: 0 0 40px;
+    --glow-strong: 0 0 60px;
+    
+    /* Gradients */
+    --gradient-warm: linear-gradient(135deg, hsl(35 45% 92%), hsl(40 50% 88%));
+    --gradient-golden: linear-gradient(135deg, hsl(45 95% 65%), hsl(45 100% 75%));
+    --gradient-tree: linear-gradient(180deg, hsl(120 60% 75%), hsl(120 40% 55%));
+    --gradient-card: linear-gradient(135deg, hsl(40 50% 95%), hsl(35 40% 90%));
 
     --sidebar-background: 0 0% 98%;
 
