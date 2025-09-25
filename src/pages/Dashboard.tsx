@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import TreeProgress from "@/components/TreeProgress";
+import XPProgress from "@/components/XPProgress";
+import JourneyPath from "@/components/JourneyPath";
+import HabitGrid from "@/components/HabitGrid";
+import ReflectionJournal from "@/components/ReflectionJournal";
+import GoalTracker from "@/components/GoalTracker";
 import TakeActionModal from "@/components/TakeActionModal";
-import CategoryJourney from "@/components/CategoryJourney";
 import SwipeIndicator from "@/components/SwipeIndicator";
-import DailyStreak from "@/components/DailyStreak";
-import WeeklyChallenge from "@/components/WeeklyChallenge";
 import { useSwipeNavigation } from "@/hooks/useSwipeNavigation";
-import { Sparkles, Calendar, User, ChevronLeft, ChevronRight } from "lucide-react";
+import { Sparkles, Calendar, User, ChevronLeft, ChevronRight, Trophy, Target, BookOpen, Users } from "lucide-react";
 
 interface DashboardProps {
   userData: {
@@ -23,17 +24,89 @@ interface DashboardProps {
 const Dashboard = ({ userData, onNavigate }: DashboardProps) => {
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
-  const [treeStage, setTreeStage] = useState<'sprout' | 'growing' | 'flourishing'>('sprout');
-  const [currentStreak, setCurrentStreak] = useState(7);
-  const [categories, setCategories] = useState({
-    finance: 0.1,
-    physical: 0.15,
-    mental: 0.05,
-    diet: 0.2
-  });
+  
+  // Gamification & Progress
+  const [userLevel, setUserLevel] = useState(3);
+  const [currentXP, setCurrentXP] = useState(1250);
+  const [xpToNextLevel, setXpToNextLevel] = useState(350);
+  const totalXPForLevel = 1000;
+  
+  // Habits state
+  const [habits, setHabits] = useState([
+    { id: '1', name: 'Morning Workout', icon: '💪', streak: 7, completed: true, category: 'physical' as const },
+    { id: '2', name: 'Meditation', icon: '🧘', streak: 3, completed: false, category: 'mental' as const },
+    { id: '3', name: 'Read 30min', icon: '📚', streak: 12, completed: true, category: 'mental' as const },
+    { id: '4', name: 'Track Expenses', icon: '💰', streak: 5, completed: false, category: 'finance' as const }
+  ]);
 
-  const screens = ['overview', 'physical', 'finance', 'mental', 'diet'];
-  const screenNames = ['Dashboard', 'Health Journey', 'Finance Journey', 'Mental Journey', 'Nutrition Journey'];
+  // Goals state
+  const [goals, setGoals] = useState([
+    {
+      id: '1',
+      title: 'Run 5K in Under 25 Minutes',
+      description: 'Improve cardiovascular fitness and endurance',
+      category: 'physical' as const,
+      progress: 18,
+      target: 25,
+      unit: 'minutes',
+      deadline: '2024-12-31',
+      milestones: [
+        { value: 30, completed: true, reward: '50 XP' },
+        { value: 27, completed: false, reward: '100 XP' },
+        { value: 25, completed: false, reward: '200 XP + Badge' }
+      ]
+    },
+    {
+      id: '2', 
+      title: 'Emergency Fund',
+      description: 'Build 6 months of emergency savings',
+      category: 'finance' as const,
+      progress: 2800,
+      target: 12000,
+      unit: '$',
+      deadline: '2025-06-30',
+      milestones: [
+        { value: 3000, completed: false, reward: '100 XP' },
+        { value: 6000, completed: false, reward: '250 XP' },
+        { value: 12000, completed: false, reward: '500 XP + Achievement' }
+      ]
+    }
+  ]);
+
+  const screens = ['dashboard', 'journeys', 'habits', 'goals', 'reflect'];
+  const screenNames = ['Dashboard', 'Journeys', 'Habits', 'Goals', 'Reflect'];
+  
+  // Journey steps data
+  const journeySteps = {
+    physical: [
+      { id: '1', title: 'Foundation Assessment', description: 'Complete fitness baseline test', xp: 50, completed: true, locked: false },
+      { id: '2', title: 'First Workout Week', description: '7 days of consistent exercise', xp: 100, completed: true, locked: false },
+      { id: '3', title: 'Cardio Mastery', description: 'Improve cardiovascular endurance', xp: 150, completed: false, locked: false, current: true },
+      { id: '4', title: 'Strength Building', description: 'Build lean muscle mass', xp: 200, completed: false, locked: true },
+      { id: '5', title: 'Athletic Performance', description: 'Peak physical conditioning', xp: 300, completed: false, locked: true }
+    ],
+    mental: [
+      { id: '1', title: 'Mindfulness Basics', description: 'Learn meditation fundamentals', xp: 50, completed: true, locked: false },
+      { id: '2', title: 'Stress Management', description: 'Develop coping strategies', xp: 100, completed: false, locked: false, current: true },
+      { id: '3', title: 'Focus Training', description: 'Improve concentration skills', xp: 150, completed: false, locked: true },
+      { id: '4', title: 'Emotional Intelligence', description: 'Master emotional regulation', xp: 200, completed: false, locked: true },
+      { id: '5', title: 'Mental Resilience', description: 'Build unshakeable confidence', xp: 300, completed: false, locked: true }
+    ],
+    finance: [
+      { id: '1', title: 'Money Mindset', description: 'Understand your relationship with money', xp: 50, completed: true, locked: false },
+      { id: '2', title: 'Budget Mastery', description: 'Create and stick to a budget', xp: 100, completed: false, locked: false, current: true },
+      { id: '3', title: 'Debt Freedom', description: 'Eliminate high-interest debt', xp: 150, completed: false, locked: true },
+      { id: '4', title: 'Investment Basics', description: 'Start building wealth', xp: 200, completed: false, locked: true },
+      { id: '5', title: 'Financial Independence', description: 'Achieve financial freedom', xp: 500, completed: false, locked: true }
+    ],
+    nutrition: [
+      { id: '1', title: 'Nutrition Fundamentals', description: 'Learn healthy eating basics', xp: 50, completed: true, locked: false },
+      { id: '2', title: 'Meal Planning', description: 'Plan nutritious meals weekly', xp: 100, completed: false, locked: false, current: true },
+      { id: '3', title: 'Portion Control', description: 'Master appropriate serving sizes', xp: 150, completed: false, locked: true },
+      { id: '4', title: 'Nutrient Timing', description: 'Optimize meal timing for energy', xp: 200, completed: false, locked: true },
+      { id: '5', title: 'Metabolic Health', description: 'Achieve optimal metabolic function', xp: 300, completed: false, locked: true }
+    ]
+  };
 
   const { swipeProps } = useSwipeNavigation({
     onSwipeLeft: () => {
@@ -46,28 +119,54 @@ const Dashboard = ({ userData, onNavigate }: DashboardProps) => {
     }
   });
 
+  // Action handlers
   const handleActionComplete = () => {
-    // Simulate tree growth
-    const currentProgress = Object.values(categories).reduce((a, b) => a + b, 0) / 4;
+    // Award XP for completing actions
+    const xpGained = Math.floor(Math.random() * 50) + 25; // 25-75 XP
+    setCurrentXP(prev => prev + xpGained);
     
-    // Randomly improve a category
-    const categoryKeys = Object.keys(categories) as (keyof typeof categories)[];
-    const randomCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
-    
-    setCategories(prev => ({
-      ...prev,
-      [randomCategory]: Math.min(prev[randomCategory] + 0.1, 1)
-    }));
-
-    // Update tree stage based on overall progress
-    const newProgress = (Object.values(categories).reduce((a, b) => a + b, 0) + 0.1) / 4;
-    if (newProgress > 0.7) {
-      setTreeStage('flourishing');
-    } else if (newProgress > 0.3) {
-      setTreeStage('growing');
+    // Level up check
+    if (currentXP + xpGained >= (1000 + userLevel * 500)) {
+      setUserLevel(prev => prev + 1);
+      setCurrentXP(0);
+      setXpToNextLevel(1000 + (userLevel + 1) * 500);
     }
-
+    
     setIsActionModalOpen(false);
+  };
+
+  const toggleHabit = (habitId: string) => {
+    setHabits(prev => prev.map(habit => {
+      if (habit.id === habitId) {
+        const newCompleted = !habit.completed;
+        return {
+          ...habit,
+          completed: newCompleted,
+          streak: newCompleted ? habit.streak + 1 : Math.max(0, habit.streak - 1)
+        };
+      }
+      return habit;
+    }));
+    
+    // Award XP for habit completion
+    setCurrentXP(prev => prev + 25);
+  };
+
+  const saveReflection = (reflection: any) => {
+    // Save reflection and award XP
+    setCurrentXP(prev => prev + 50);
+  };
+
+  const updateGoalProgress = (goalId: string, progress: number) => {
+    setGoals(prev => prev.map(goal => 
+      goal.id === goalId ? { ...goal, progress } : goal
+    ));
+    // Award XP for goal progress
+    setCurrentXP(prev => prev + 10);
+  };
+
+  const handleStepClick = (stepId: string) => {
+    setIsActionModalOpen(true);
   };
 
   const getGreeting = () => {
@@ -77,11 +176,9 @@ const Dashboard = ({ userData, onNavigate }: DashboardProps) => {
     return "Good evening";
   };
 
-  const overallProgress = Object.values(categories).reduce((a, b) => a + b, 0) / 4;
-
-  const handleChallengeJoin = () => {
-    setIsActionModalOpen(true);
-  };
+  const completedHabits = habits.filter(h => h.completed).length;
+  const totalStreak = habits.reduce((sum, h) => sum + h.streak, 0);
+  const completedGoals = goals.filter(g => g.progress >= g.target).length;
 
   const navigateScreen = (direction: 'prev' | 'next') => {
     if (direction === 'prev' && currentScreenIndex > 0) {
@@ -94,88 +191,144 @@ const Dashboard = ({ userData, onNavigate }: DashboardProps) => {
   const renderScreen = () => {
     const currentScreen = screens[currentScreenIndex];
 
-    if (currentScreen === 'overview') {
-      return (
-        <div className="space-y-6">
-          {/* Tree Progress */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <TreeProgress stage={treeStage} categories={categories} />
-          </motion.div>
+    switch (currentScreen) {
+      case 'dashboard':
+        return (
+          <div className="space-y-6">
+            {/* XP Progress */}
+            <XPProgress 
+              currentXP={currentXP}
+              level={userLevel}
+              xpToNextLevel={xpToNextLevel}
+              totalXPForLevel={totalXPForLevel}
+            />
 
-          {/* Daily Streak */}
-          <DailyStreak currentStreak={currentStreak} longestStreak={14} />
+            {/* Quick Stats */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-gradient-card rounded-xl p-4 text-center">
+                <div className="text-2xl font-bold text-primary">{completedHabits}</div>
+                <div className="text-xs text-muted-foreground">Habits Today</div>
+              </div>
+              <div className="bg-gradient-card rounded-xl p-4 text-center">
+                <div className="text-2xl font-bold text-green-500">{totalStreak}</div>
+                <div className="text-xs text-muted-foreground">Total Streaks</div>
+              </div>
+              <div className="bg-gradient-card rounded-xl p-4 text-center">
+                <div className="text-2xl font-bold text-blue-500">{completedGoals}</div>
+                <div className="text-xs text-muted-foreground">Goals Done</div>
+              </div>
+            </div>
 
-          {/* Weekly Challenge */}
-          <WeeklyChallenge
-            title="Mindful Movement Week"
-            description="Take 10 minutes of intentional movement each day. Walking, stretching, or dancing - any movement counts!"
-            progress={3}
-            target={7}
-            timeLeft="4 days left"
-            onJoin={handleChallengeJoin}
-          />
+            {/* Daily Focus */}
+            <div className="bg-gradient-to-r from-primary/20 to-primary/10 rounded-2xl p-6">
+              <h3 className="text-lg font-semibold mb-2">Today's Focus: {userData.primaryFocus}</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Complete 3 habits and make progress on your current goal to level up faster!
+              </p>
+              <Button
+                onClick={() => setIsActionModalOpen(true)}
+                className="w-full"
+                variant="default"
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                Take Action & Earn XP
+              </Button>
+            </div>
 
-          {/* Progress Summary */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="bg-gradient-card rounded-2xl p-6 shadow-glow-soft"
-          >
-            <h3 className="text-lg font-semibold mb-4 text-center">Growth Areas</h3>
-            <div className="space-y-3">
-              {Object.entries(categories).map(([key, value]) => (
-                <div key={key} className="flex items-center justify-between">
-                  <span className="capitalize text-sm font-medium">{key}</span>
-                  <div className="flex-1 mx-3 bg-muted rounded-full h-2">
-                    <motion.div
-                      className={`h-2 rounded-full bg-category-${key}`}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${value * 100}%` }}
-                      transition={{ delay: 0.5, duration: 0.8 }}
-                    ></motion.div>
+            {/* Quick Actions */}
+            <div className="grid grid-cols-2 gap-4">
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2"
+                onClick={() => setCurrentScreenIndex(2)}
+              >
+                <Trophy className="w-6 h-6" />
+                <span className="text-sm">Check Habits</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2"
+                onClick={() => setCurrentScreenIndex(4)}
+              >
+                <BookOpen className="w-6 h-6" />
+                <span className="text-sm">Daily Reflect</span>
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 'journeys':
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold mb-2">Choose Your Journey</h2>
+              <p className="text-muted-foreground">Select a path to focus on today</p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              {(['physical', 'mental', 'finance', 'nutrition'] as const).map((category) => (
+                <Button
+                  key={category}
+                  variant="outline"
+                  className="h-24 flex-col gap-2 border-2"
+                  onClick={() => {
+                    // Navigate to specific journey - we'll create dedicated journey screens
+                    setIsActionModalOpen(true);
+                  }}
+                >
+                  <div className="text-2xl">
+                    {category === 'physical' && '💪'}
+                    {category === 'mental' && '🧠'}
+                    {category === 'finance' && '💰'}
+                    {category === 'nutrition' && '🥗'}
                   </div>
+                  <span className="text-sm font-medium capitalize">{category}</span>
                   <span className="text-xs text-muted-foreground">
-                    {Math.round(value * 100)}%
+                    {journeySteps[category].filter(s => s.completed).length}/{journeySteps[category].length} steps
                   </span>
-                </div>
+                </Button>
               ))}
             </div>
-          </motion.div>
+            
+            {/* Current Focus Journey */}
+            <div className="mt-8">
+              <JourneyPath
+                category="physical"
+                steps={journeySteps.physical}
+                onStepClick={handleStepClick}
+              />
+            </div>
+          </div>
+        );
 
-          {/* Take Action Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-          >
-            <Button
-              onClick={() => setIsActionModalOpen(true)}
-              variant="action"
-              size="lg"
-              className="w-full h-16 text-lg font-semibold rounded-3xl"
-            >
-              <Sparkles className="w-6 h-6 mr-2" />
-              Take Action
-            </Button>
-          </motion.div>
-        </div>
-      );
+      case 'habits':
+        return (
+          <HabitGrid
+            habits={habits}
+            onToggleHabit={toggleHabit}
+            onAddHabit={() => setIsActionModalOpen(true)}
+          />
+        );
+
+      case 'goals':
+        return (
+          <GoalTracker
+            goals={goals}
+            onAddGoal={() => setIsActionModalOpen(true)}
+            onUpdateProgress={updateGoalProgress}
+          />
+        );
+
+      case 'reflect':
+        return (
+          <ReflectionJournal
+            onSaveReflection={saveReflection}
+          />
+        );
+
+      default:
+        return null;
     }
-
-    // Individual category journey
-    return (
-      <CategoryJourney
-        category={currentScreen as 'physical' | 'finance' | 'mental' | 'diet'}
-        progress={categories[currentScreen as keyof typeof categories]}
-        onTakeAction={() => setIsActionModalOpen(true)}
-      />
-    );
   };
 
   return (
@@ -198,25 +351,14 @@ const Dashboard = ({ userData, onNavigate }: DashboardProps) => {
               {getGreeting()}, {userData.name}!
             </h1>
             <p className="text-sm text-muted-foreground">
-              {currentScreenIndex === 0 
-                ? `Your tree is ${Math.round(overallProgress * 100)}% grown`
-                : `${screens[currentScreenIndex].charAt(0).toUpperCase() + screens[currentScreenIndex].slice(1)} journey`
-              }
+              Level {userLevel} • {currentXP.toLocaleString()} XP
             </p>
           </div>
         </div>
         
         <div className="flex items-center gap-2">
           <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onNavigate('checkin')}
-            className="rounded-full w-8 h-8"
-          >
-            <Calendar className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
+            variant="ghost" 
             size="icon"
             onClick={() => onNavigate('profile')}
             className="rounded-full w-8 h-8"
