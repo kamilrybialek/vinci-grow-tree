@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import TreeProgress from "@/components/TreeProgress";
@@ -7,11 +7,8 @@ import CategoryJourney from "@/components/CategoryJourney";
 import SwipeIndicator from "@/components/SwipeIndicator";
 import DailyStreak from "@/components/DailyStreak";
 import WeeklyChallenge from "@/components/WeeklyChallenge";
-import GoalSetting from "@/components/GoalSetting";
-import ProgressInsights from "@/components/ProgressInsights";
-import HabitTracker from "@/components/HabitTracker";
 import { useSwipeNavigation } from "@/hooks/useSwipeNavigation";
-import { Sparkles, Calendar, User, ChevronLeft, ChevronRight, BarChart3, Target, CheckSquare } from "lucide-react";
+import { Sparkles, Calendar, User, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DashboardProps {
   userData: {
@@ -34,30 +31,9 @@ const Dashboard = ({ userData, onNavigate }: DashboardProps) => {
     mental: 0.05,
     diet: 0.2
   });
-  const [goals, setGoals] = useState<any[]>([]);
-  const [habits, setHabits] = useState<any[]>([]);
-  const [weeklyActions, setWeeklyActions] = useState(12);
 
-  // Load data from localStorage
-  useEffect(() => {
-    const savedGoals = localStorage.getItem('vinci4-goals');
-    const savedHabits = localStorage.getItem('vinci4-habits');
-    
-    if (savedGoals) setGoals(JSON.parse(savedGoals));
-    if (savedHabits) setHabits(JSON.parse(savedHabits));
-  }, []);
-
-  // Save data to localStorage
-  useEffect(() => {
-    localStorage.setItem('vinci4-goals', JSON.stringify(goals));
-  }, [goals]);
-
-  useEffect(() => {
-    localStorage.setItem('vinci4-habits', JSON.stringify(habits));
-  }, [habits]);
-
-  const screens = ['overview', 'insights', 'goals', 'habits', 'physical', 'finance', 'mental', 'diet'];
-  const screenNames = ['Dashboard', 'Progress Insights', 'Goals', 'Habits', 'Health Journey', 'Finance Journey', 'Mental Journey', 'Nutrition Journey'];
+  const screens = ['overview', 'physical', 'finance', 'mental', 'diet'];
+  const screenNames = ['Dashboard', 'Health Journey', 'Finance Journey', 'Mental Journey', 'Nutrition Journey'];
 
   const { swipeProps } = useSwipeNavigation({
     onSwipeLeft: () => {
@@ -80,85 +56,18 @@ const Dashboard = ({ userData, onNavigate }: DashboardProps) => {
     
     setCategories(prev => ({
       ...prev,
-      [randomCategory]: Math.min(prev[randomCategory] + 0.05, 1)
+      [randomCategory]: Math.min(prev[randomCategory] + 0.1, 1)
     }));
 
     // Update tree stage based on overall progress
-    const newProgress = (Object.values(categories).reduce((a, b) => a + b, 0) + 0.05) / 4;
+    const newProgress = (Object.values(categories).reduce((a, b) => a + b, 0) + 0.1) / 4;
     if (newProgress > 0.7) {
       setTreeStage('flourishing');
     } else if (newProgress > 0.3) {
       setTreeStage('growing');
     }
 
-    // Increment weekly actions
-    setWeeklyActions(prev => prev + 1);
-
     setIsActionModalOpen(false);
-  };
-
-  const handleGoalAdded = (goal: any) => {
-    setGoals(prev => [...prev, { ...goal, id: Date.now().toString() }]);
-  };
-
-  const handleGoalComplete = (goalId: string) => {
-    setGoals(prev => prev.map(goal => 
-      goal.id === goalId ? { ...goal, completed: true } : goal
-    ));
-    
-    // Boost category progress when goal is completed
-    const goal = goals.find(g => g.id === goalId);
-    if (goal) {
-      setCategories(prev => ({
-        ...prev,
-        [goal.category]: Math.min(prev[goal.category] + 0.15, 1)
-      }));
-    }
-  };
-
-  const handleGoalDelete = (goalId: string) => {
-    setGoals(prev => prev.filter(goal => goal.id !== goalId));
-  };
-
-  const handleHabitAdd = (habitData: any) => {
-    const newHabit = {
-      ...habitData,
-      id: Date.now().toString(),
-      streak: 0,
-      completedToday: false,
-      completedDates: []
-    };
-    setHabits(prev => [...prev, newHabit]);
-  };
-
-  const handleHabitToggle = (habitId: string) => {
-    const today = new Date().toISOString().split('T')[0];
-    
-    setHabits(prev => prev.map(habit => {
-      if (habit.id === habitId) {
-        const wasCompleted = habit.completedToday;
-        const newCompletedDates = wasCompleted 
-          ? habit.completedDates.filter((date: string) => date !== today)
-          : [...habit.completedDates, today];
-        
-        return {
-          ...habit,
-          completedToday: !wasCompleted,
-          completedDates: newCompletedDates,
-          streak: !wasCompleted ? habit.streak + 1 : Math.max(0, habit.streak - 1)
-        };
-      }
-      return habit;
-    }));
-
-    // Small category progress boost for habit completion
-    const habit = habits.find(h => h.id === habitId);
-    if (habit && !habit.completedToday) {
-      setCategories(prev => ({
-        ...prev,
-        [habit.category]: Math.min(prev[habit.category] + 0.02, 1)
-      }));
-    }
   };
 
   const getGreeting = () => {
@@ -195,11 +104,7 @@ const Dashboard = ({ userData, onNavigate }: DashboardProps) => {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <TreeProgress 
-              stage={treeStage} 
-              categories={categories} 
-              overallProgress={overallProgress}
-            />
+            <TreeProgress stage={treeStage} categories={categories} />
           </motion.div>
 
           {/* Daily Streak */}
@@ -263,39 +168,6 @@ const Dashboard = ({ userData, onNavigate }: DashboardProps) => {
       );
     }
 
-    // Enhanced screens
-    if (currentScreen === 'insights') {
-      return (
-        <ProgressInsights
-          categories={categories}
-          streak={currentStreak}
-          weeklyActions={weeklyActions}
-          completedGoals={goals.filter(g => g.completed).length}
-        />
-      );
-    }
-
-    if (currentScreen === 'goals') {
-      return (
-        <GoalSetting
-          goals={goals}
-          onGoalAdded={handleGoalAdded}
-          onGoalComplete={handleGoalComplete}
-          onGoalDelete={handleGoalDelete}
-        />
-      );
-    }
-
-    if (currentScreen === 'habits') {
-      return (
-        <HabitTracker
-          habits={habits}
-          onHabitToggle={handleHabitToggle}
-          onHabitAdd={handleHabitAdd}
-        />
-      );
-    }
-
     // Individual category journey
     return (
       <CategoryJourney
@@ -328,52 +200,13 @@ const Dashboard = ({ userData, onNavigate }: DashboardProps) => {
             <p className="text-sm text-muted-foreground">
               {currentScreenIndex === 0 
                 ? `Your tree is ${Math.round(overallProgress * 100)}% grown`
-                : currentScreenIndex === 1
-                  ? `Track your growth progress`
-                  : currentScreenIndex === 2
-                    ? `${goals.filter(g => !g.completed).length} active goals`
-                    : currentScreenIndex === 3
-                      ? `${habits.filter(h => h.completedToday).length}/${habits.length} habits today`
-                      : `${screens[currentScreenIndex].charAt(0).toUpperCase() + screens[currentScreenIndex].slice(1)} journey`
+                : `${screens[currentScreenIndex].charAt(0).toUpperCase() + screens[currentScreenIndex].slice(1)} journey`
               }
             </p>
           </div>
         </div>
         
         <div className="flex items-center gap-2">
-          {/* Quick action icons for insights, goals, habits */}
-          {currentScreenIndex === 0 && (
-            <>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setCurrentScreenIndex(1)}
-                className="rounded-full w-8 h-8"
-                title="View Insights"
-              >
-                <BarChart3 className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setCurrentScreenIndex(2)}
-                className="rounded-full w-8 h-8"
-                title="Goals"
-              >
-                <Target className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setCurrentScreenIndex(3)}
-                className="rounded-full w-8 h-8"
-                title="Habits"
-              >
-                <CheckSquare className="w-4 h-4" />
-              </Button>
-            </>
-          )}
-          
           <Button
             variant="ghost"
             size="icon"

@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { Progress } from "@/components/ui/progress";
 
 interface TreeProgressProps {
   stage: 'sprout' | 'growing' | 'flourishing';
@@ -9,10 +8,9 @@ interface TreeProgressProps {
     mental: number;
     diet: number;
   };
-  overallProgress?: number;
 }
 
-const TreeProgress = ({ stage, categories, overallProgress = 0 }: TreeProgressProps) => {
+const TreeProgress = ({ stage, categories }: TreeProgressProps) => {
   const getTreeContent = () => {
     switch (stage) {
       case 'sprout':
@@ -177,79 +175,8 @@ const TreeProgress = ({ stage, categories, overallProgress = 0 }: TreeProgressPr
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full space-y-6">
-      {/* Overall Progress Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-sm"
-      >
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-muted-foreground">Growth Progress</span>
-          <span className="text-lg font-bold text-primary">
-            {Math.round(overallProgress * 100)}%
-          </span>
-        </div>
-        <Progress 
-          value={overallProgress * 100} 
-          className="h-4 bg-muted/50"
-        />
-        <div className="flex justify-between mt-1 text-xs text-muted-foreground">
-          <span>Sprout</span>
-          <span>Growing</span>
-          <span>Flourishing</span>
-        </div>
-      </motion.div>
-
-      {/* Tree Visualization */}
-      <div className="relative">
-        {getTreeContent()}
-        
-        {/* Category Progress Rings */}
-        {categories && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
-            className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2"
-          >
-            {Object.entries(categories).map(([key, value]) => (
-              <div key={key} className="flex flex-col items-center">
-                <div className="relative w-8 h-8">
-                  <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 32 32">
-                    <circle
-                      cx="16"
-                      cy="16"
-                      r="14"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      fill="none"
-                      className="text-muted/30"
-                    />
-                    <motion.circle
-                      cx="16"
-                      cy="16"
-                      r="14"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      fill="none"
-                      className={`text-category-${key}`}
-                      strokeDasharray={`${2 * Math.PI * 14}`}
-                      strokeDashoffset={`${2 * Math.PI * 14 * (1 - value)}`}
-                      initial={{ strokeDashoffset: 2 * Math.PI * 14 }}
-                      animate={{ strokeDashoffset: 2 * Math.PI * 14 * (1 - value) }}
-                      transition={{ delay: 1.5, duration: 1, ease: "easeOut" }}
-                    />
-                  </svg>
-                </div>
-                <span className="text-xs text-muted-foreground capitalize mt-1">
-                  {key.slice(0, 3)}
-                </span>
-              </div>
-            ))}
-          </motion.div>
-        )}
-      </div>
+    <div className="flex items-center justify-center w-full">
+      {getTreeContent()}
     </div>
   );
 };
