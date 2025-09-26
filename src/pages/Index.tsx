@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Onboarding from "./Onboarding";
-import Dashboard from "./Dashboard";
+import NewDashboard from "./NewDashboard";
 import DailyCheckin from "./DailyCheckin";
 import Profile from "./Profile";
 import { toast } from "@/hooks/use-toast";
@@ -69,7 +69,7 @@ const Index = () => {
       
       case 'dashboard':
         return userData ? (
-          <Dashboard 
+          <NewDashboard 
             userData={userData} 
             onNavigate={(page: string) => setCurrentPage(page as Page)}
           />

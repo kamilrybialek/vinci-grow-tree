@@ -58,24 +58,17 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Vinci4 semantic colors
-        tree: {
-          trunk: "hsl(var(--tree-trunk))",
-          green: "hsl(var(--tree-green))",
-          glow: "hsl(var(--tree-glow))",
-        },
-        category: {
-          finance: "hsl(var(--finance))",
-          physical: "hsl(var(--physical))",
-          mental: "hsl(var(--mental))",
-          diet: "hsl(var(--diet))",
+        // Wellness semantic colors
+        wellness: {
+          physical: "hsl(var(--wellness-physical))",
+          mental: "hsl(var(--wellness-mental))",
+          emotional: "hsl(var(--wellness-emotional))",
+          spiritual: "hsl(var(--wellness-spiritual))",
         },
       },
       backgroundImage: {
-        'gradient-warm': 'var(--gradient-warm)',
-        'gradient-golden': 'var(--gradient-golden)',
-        'gradient-tree': 'var(--gradient-tree)',
-        'gradient-card': 'var(--gradient-card)',
+        'gradient-success': 'var(--gradient-success)',
+        'gradient-wellness': 'var(--gradient-wellness)',
       },
       boxShadow: {
         'glow-soft': 'var(--glow-soft) hsl(var(--primary-glow) / 0.3)',

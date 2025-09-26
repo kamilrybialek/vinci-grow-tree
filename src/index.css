@@ -2,65 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Vinci4 Design System - Journey-inspired warm, organic aesthetics */
+/* Balance Design System - Modern, clean aesthetics */
 
 @layer base {
   :root {
-    /* Core Journey-inspired palette */
-    --background: 35 45% 92%;  /* Sandy beige */
-    --foreground: 25 15% 25%;  /* Warm dark brown */
-
-    --card: 40 50% 95%;
-    --card-foreground: 25 15% 25%;
-
-    --popover: 40 50% 95%;
-    --popover-foreground: 25 15% 25%;
-
-    /* Golden accent system */
-    --primary: 45 95% 65%;     /* Warm gold */
-    --primary-foreground: 25 15% 15%;
-    --primary-glow: 45 100% 75%;
-
-    /* Tree growth colors */
-    --tree-trunk: 25 35% 35%;
-    --tree-green: 120 40% 55%;
-    --tree-glow: 120 60% 75%;
+    /* Modern, clean color palette */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
     
-    /* Category colors */
-    --finance: 220 70% 60%;    /* Deep blue */
-    --physical: 15 85% 60%;    /* Warm orange */
-    --mental: 280 50% 65%;     /* Soft purple */
-    --diet: 90 50% 55%;        /* Fresh green */
-
-    --secondary: 35 30% 85%;
-    --secondary-foreground: 25 15% 25%;
-
-    --muted: 35 25% 88%;
-    --muted-foreground: 25 10% 45%;
-
-    --accent: 45 80% 75%;
-    --accent-foreground: 25 15% 15%;
-
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 40 50% 95%;
-
-    --border: 35 20% 80%;
-    --input: 35 25% 85%;
-    --ring: 45 95% 65%;
-
-    /* Organic curved corners */
-    --radius: 1rem;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
     
-    /* Glowing effects */
-    --glow-soft: 0 0 20px;
-    --glow-medium: 0 0 40px;
-    --glow-strong: 0 0 60px;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
     
-    /* Gradients */
-    --gradient-warm: linear-gradient(135deg, hsl(35 45% 92%), hsl(40 50% 88%));
-    --gradient-golden: linear-gradient(135deg, hsl(45 95% 65%), hsl(45 100% 75%));
-    --gradient-tree: linear-gradient(180deg, hsl(120 60% 75%), hsl(120 40% 55%));
-    --gradient-card: linear-gradient(135deg, hsl(40 50% 95%), hsl(35 40% 90%));
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+    
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5% 64.9%;
+    
+    --radius: 0.5rem;
+    
+    /* Wellness colors */
+    --wellness-physical: 200 100% 50%;
+    --wellness-mental: 160 100% 50%;
+    --wellness-emotional: 280 100% 50%;
+    --wellness-spiritual: 50 100% 50%;
+    
+    /* Success gradients */
+    --gradient-success: linear-gradient(135deg, hsl(160 100% 50%) 0%, hsl(200 100% 50%) 100%);
+    --gradient-wellness: linear-gradient(135deg, hsl(240 5.9% 10%) 0%, hsl(240 3.8% 46.1%) 100%);
 
     --sidebar-background: 0 0% 98%;
 
@@ -80,41 +65,41 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --destructive-foreground: 0 85.7% 97.3%;
+    
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar-background: 240 10% 3.9%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 240 5.9% 10%;
     --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 240 4.9% 83.9%;
   }
 }
 
