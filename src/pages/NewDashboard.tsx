@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import DashboardOverview from "@/components/DashboardOverview";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import BottomNavigation from "@/components/BottomNavigation";
+import JourneySteps from "@/components/JourneySteps";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -27,31 +28,15 @@ const NewDashboard = ({ userData, onNavigate }: NewDashboardProps) => {
     setCurrentSection(null);
   };
 
+  const handleTaskComplete = (stepId: string, taskType: 'daily' | 'milestone') => {
+    // Handle task completion logic here
+    console.log(`Completed ${taskType} task for step ${stepId}`);
+  };
+
   const renderSection = () => {
     switch (currentSection) {
       case 'goals':
-        return (
-          <Card className="p-6 space-y-4">
-            <h2 className="text-xl font-semibold">Goals</h2>
-            <p className="text-muted-foreground">Track your objectives and milestones.</p>
-            <div className="space-y-4">
-              <div className="p-4 border rounded-lg">
-                <h3 className="font-medium">Fitness Goal</h3>
-                <p className="text-sm text-muted-foreground">Run 5K under 25 minutes</p>
-                <div className="mt-2 bg-secondary rounded-full h-2">
-                  <div className="bg-primary h-2 rounded-full w-3/4"></div>
-                </div>
-              </div>
-              <div className="p-4 border rounded-lg">
-                <h3 className="font-medium">Learning Goal</h3>
-                <p className="text-sm text-muted-foreground">Read 12 books this year</p>
-                <div className="mt-2 bg-secondary rounded-full h-2">
-                  <div className="bg-primary h-2 rounded-full w-1/2"></div>
-                </div>
-              </div>
-            </div>
-          </Card>
-        );
+        return <JourneySteps journeyType="finance" onTaskComplete={handleTaskComplete} />;
       
       case 'habits':
         return (
@@ -162,19 +147,19 @@ const NewDashboard = ({ userData, onNavigate }: NewDashboardProps) => {
       {/* Header */}
       <header className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur-sm sticky top-0 z-20">
         <div className="flex items-center space-x-2">
+          <HamburgerMenu onNavigate={handleSectionNavigate} />
           {currentSection && (
             <Button
               variant="ghost"
               size="sm"
               onClick={handleBackToDashboard}
-              className="mr-2"
+              className="ml-2"
             >
               ← Back
             </Button>
           )}
           <h1 className="text-xl font-semibold">Balance</h1>
         </div>
-        <HamburgerMenu onNavigate={handleSectionNavigate} />
       </header>
 
       {/* Main Content */}
